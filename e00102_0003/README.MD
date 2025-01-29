@@ -58,6 +58,26 @@ python main.py
 ```shell
 pyinstaller --onefile main.py
 ```
+
+```shell
+clear
+pyinstaller -F main.py -n 程序名称
+```
+
+
+# pyinstaller 使用方法
+```shell
+pyinstaller --help
+```
+options:
+  -h, --help            show this help message and exit
+  -v, --version         Show program version info and exit.
+What to generate:
+  -D, --onedir          Create a one-folder bundle containing an executable (default)
+  -F, --onefile         Create a one-file bundled executable.
+  --specpath DIR        Folder to store the generated spec file (default: current directory)
+  -n, --name NAME       Name to assign to the bundled app and spec file (default: first script's basename)
+
 # Python路径变更修改
 
 1.配置 VSCode 的 Python 解释器
