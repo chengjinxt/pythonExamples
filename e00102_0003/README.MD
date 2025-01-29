@@ -9,6 +9,12 @@ D:\Python\Python313\
 D:\Python\Python36\Scripts\
 D:\Python\Python36\
 上面的设置为313版本有效
+同时可以把安装目录下的
+D:\Python\Python313\python.exe
+文件多复制几份，改为不同的名称，如下：
+D:\Python\Python313\python313.exe
+D:\Python\Python313\python3.13.exe
+D:\Python\Python313\python3.exe
 
 生成虚拟环境
 python -m venv .venv
