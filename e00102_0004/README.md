@@ -10,6 +10,158 @@
 在弹出的列表中选择 Enter interpreter path，然后手动输入或浏览到 D:\Python\python.exe。
 
 
+基于 PySide6 开发软件的步骤可以分为以下几个阶段：**环境准备**、**开发**、**测试**、**打包发布**。以下是详细的步骤说明：
+
+---
+
+## 1. **环境准备**
+### 1.1 安装 Python
+- 确保已安装 Python 3.7 或更高版本。
+- 可以从 [Python 官网](https://www.python.org/downloads/) 下载并安装。
+
+### 1.2 创建虚拟环境
+- 使用虚拟环境隔离项目依赖。
+- 在项目目录下运行以下命令：
+  ```bash
+  python -m venv .venv
+  ```
+- 激活虚拟环境：
+  - Windows:
+    ```bash
+    .venv\Scripts\activate
+    ```
+  - macOS/Linux:
+    ```bash
+    source .venv/bin/activate
+    ```
+
+### 1.3 安装 PySide6
+- 在虚拟环境中安装 PySide6：
+  ```bash
+  pip install PySide6
+  ```
+
+### 1.4 安装开发工具（可选）
+- 安装代码编辑器或 IDE，如 **VS Code**、**PyCharm**。
+- 安装 Qt Designer（PySide6 自带）用于设计 UI。
+
+---
+
+## 2. **开发**
+### 2.1 设计 UI
+- 使用 **Qt Designer** 设计界面：
+  - 运行 `pyside6-designer` 启动 Qt Designer。
+  - 设计界面并保存为 `.ui` 文件（如 `main_window.ui`）。
+- 将 `.ui` 文件转换为 Python 代码：
+  ```bash
+  pyside6-uic main_window.ui > ui_main_window.py
+  ```
+
+### 2.2 编写主程序
+- 创建一个 Python 文件（如 `main.py`），加载 UI 文件并实现逻辑：
+  ```python
+  import sys
+  from PySide6.QtWidgets import QApplication, QMainWindow
+  from ui_main_window import Ui_MainWindow
+
+  class MainWindow(QMainWindow):
+      def __init__(self):
+          super().__init__()
+          self.ui = Ui_MainWindow()
+          self.ui.setupUi(self)
+
+          # 连接信号和槽
+          self.ui.pushButton.clicked.connect(self.on_button_click)
+
+      def on_button_click(self):
+          self.ui.label.setText("Hello, PySide6!")
+
+  if __name__ == "__main__":
+      app = QApplication(sys.argv)
+      window = MainWindow()
+      window.show()
+      sys.exit(app.exec())
+  ```
+
+### 2.3 运行程序
+- 在终端运行：
+  ```bash
+  python main.py
+  ```
+
+---
+
+## 3. **测试**
+- 使用单元测试框架（如 `unittest` 或 `pytest`）测试代码逻辑。
+- 手动测试 UI 功能，确保界面交互正常。
+
+---
+
+## 4. **打包发布**
+### 4.1 安装打包工具
+- 使用 `PyInstaller` 打包应用程序：
+  ```bash
+  pip install pyinstaller
+  ```
+
+### 4.2 打包应用程序
+- 在项目目录下运行：
+  ```bash
+  pyinstaller --onefile --windowed main.py
+  ```
+  - `--onefile`：将所有文件打包成一个可执行文件。
+  - `--windowed`：不显示命令行窗口（适用于 GUI 程序）。
+
+- 打包完成后，可执行文件会生成在 `dist` 目录中。
+
+### 4.3 处理资源文件（可选）
+- 如果程序使用了资源文件（如图片、配置文件），需要确保它们被打包：
+  - 在代码中使用相对路径引用资源。
+  - 使用 `PyInstaller` 的 `--add-data` 参数：
+    ```bash
+    pyinstaller --onefile --windowed --add-data "resources/*;resources" main.py
+    ```
+
+### 4.4 测试打包后的程序
+- 运行 `dist` 目录中的可执行文件，确保功能正常。
+
+### 4.5 分发应用程序
+- 将 `dist` 目录中的可执行文件分发给用户。
+- 如果需要跨平台分发，可以在不同操作系统上重复打包步骤。
+
+---
+
+## 5. **其他注意事项**
+### 5.1 跨平台支持
+- PySide6 支持 Windows、macOS 和 Linux。
+- 在不同平台上打包时，确保使用对应平台的 Python 和 PyInstaller。
+
+### 5.2 减小打包体积
+- 使用 `UPX` 压缩可执行文件：
+  - 下载 [UPX](https://upx.github.io/)。
+  - 在打包时添加 `--upx-dir` 参数：
+    ```bash
+    pyinstaller --onefile --windowed --upx-dir /path/to/upx main.py
+    ```
+
+### 5.3 处理依赖问题
+- 如果打包后程序运行报错，可能是缺少依赖库。
+- 使用 `--hidden-import` 参数显式导入缺失的模块：
+  ```bash
+  pyinstaller --onefile --windowed --hidden-import=module_name main.py
+  ```
+
+---
+
+## 总结
+1. **环境准备**：安装 Python、PySide6，创建虚拟环境。
+2. **开发**：使用 Qt Designer 设计 UI，编写主程序逻辑。
+3. **测试**：测试功能和界面。
+4. **打包发布**：使用 PyInstaller 打包，分发可执行文件。
+
+通过以上步骤，你可以完成一个基于 PySide6 的桌面应用程序的开发、测试和发布。
+
+# 动态加载 UI 文件
 在 PySide6 中，动态加载 UI 文件是一种常见的做法，它允许你将 UI 设计与逻辑代码分离，便于维护和更新。以下是动态加载 UI 文件的详细方法：
 
 ---
